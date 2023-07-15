@@ -5,7 +5,7 @@ WORKDIR /go
 RUN apk add git make
 RUN git clone https://github.com/kubernetes-sigs/iptables-wrappers.git code \
     && cd code \
-    && git checkout 5792812d9e5a5bb7f22d79d557bbfeece253343d \
+    && git checkout 5792812d9e5a5bb7f22d79d557bbfeece253343d
 RUN make build
 
 FROM linuxserver/wireguard:1.0.20210914
