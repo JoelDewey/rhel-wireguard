@@ -14,6 +14,5 @@ RUN (cd code && make build)
 
 FROM linuxserver/wireguard:$LSIO_WIREGUARD_TAG
 
-COPY --from=build /go/code/iptables-wrapper-installer.sh /
-COPY --from=build /go/code/bin/iptables-wrapper /
+COPY --from=build /go/code/iptables-wrapper-installer.sh /go/code/bin/iptables-wrapper /
 RUN apk add --no-cache nftables && bash /iptables-wrapper-installer.sh
