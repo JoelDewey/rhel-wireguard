@@ -15,6 +15,8 @@ This Dockerfile:
 2. Copies the `iptables-wrapper` build output to the final build step based off of a specific `linuxserver/wireguard` tag.
 3. Installs `nftables` and runs the `iptables-wrapper` installation script.
 
+The LinuxServer.io configuration then takes over and begins running Wireguard like the official image.
+
 ## References
 
 Based off of the example given in [a feature request](https://github.com/linuxserver/docker-wireguard/issues/263) for 
