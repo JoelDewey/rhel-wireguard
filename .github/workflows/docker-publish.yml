@@ -93,6 +93,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Create new Git tag
+        uses: rickstaa/action-create-tag@v1.7.2
+        if: github.event_name != 'pull_request'
+        with:
+          tag: ${{ steps.tag-text.outputs.DESIRED_TAG }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
