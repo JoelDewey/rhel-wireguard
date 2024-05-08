@@ -11,8 +11,6 @@ on:
     - cron: '34 6 * * *'
   push:
     branches: [ "main" ]
-    # Publish semver tags as releases.
-    tags: [ 'v[0-9]+' ]
   pull_request:
     branches: [ "main" ]
 
@@ -37,6 +35,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Generate tag text
+        id: tag-text
+        shell: bash
+        run: |
+          DATE_STR=`TZ='UTC' date +%Y%m%dT%H%M%SZ`
+          TAG_STR="v${DATE_STR}"
+          echo "DESIRED_TAG=${TAG_STR}" >> "$GITHUB_OUTPUT"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -67,6 +73,12 @@ jobs:
         uses: docker/metadata-action@2ee3d3070bb41b40bf7305d15233321e12c1dc5c
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=raw,${{ steps.tag-text.outputs.DESIRED_TAG }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -81,6 +93,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Create new Git tag
+        uses: rickstaa/action-create-tag@v1.7.2
+        if: github.event_name != 'pull_request'
+        with:
+          tag: ${{ steps.tag-text.outputs.DESIRED_TAG }}
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
