@@ -67,7 +67,7 @@ jobs:
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
-        if: ${{ github.event_name != 'pull_request' || ! steps.paths-changed.outputs.dockerfile }}
+        if: ${{ github.event_name != 'pull_request' && steps.paths-changed.outputs.dockerfile }}
         uses: docker/login-action@7840e6ddd4a9223910798f6a315544257fccd96e
         with:
           registry: ${{ env.REGISTRY }}
@@ -95,7 +95,7 @@ jobs:
         uses: docker/build-push-action@729f7f49266dec5e72fe7339273d3f7e65abacd7
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' || ! steps.paths-changed.outputs.dockerfile }}
+          push: ${{ github.event_name != 'pull_request' && steps.paths-changed.outputs.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -103,7 +103,7 @@ jobs:
 
       - name: Create new Git tag
         uses: rickstaa/action-create-tag@v1.7.2
-        if: ${{ github.event_name != 'pull_request' || ! steps.paths-changed.outputs.dockerfile }}
+        if: ${{ github.event_name != 'pull_request' && steps.paths-changed.outputs.dockerfile }}
         with:
           tag: ${{ steps.tag-text.outputs.DESIRED_TAG }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -114,7 +114,7 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' || ! steps.paths-changed.outputs.dockerfile }}
+        if: ${{ github.event_name != 'pull_request' && steps.paths-changed.outputs.dockerfile }}
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
