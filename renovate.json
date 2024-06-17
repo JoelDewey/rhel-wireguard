@@ -5,7 +5,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["linuxserver/wireguard"],
-      "versioning": "regex:^version-(?<major>v?\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+      "versioning": "regex:^(?<major>v?\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     },
     {
       "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
