@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Paths changed
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: paths-changed
         with:
           base: main
